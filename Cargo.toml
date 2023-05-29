@@ -1,0 +1,23 @@
+[package]
+name = "riftrace"
+version = "0.1.1"
+edition = "2021"
+
+include = [
+    "src/*",
+    "tests/*",
+    "Cargo.toml",
+    "LICENSE",
+    "README.md",
+]
+homepage = "https://github.com/ImanSeyed/riftrace"
+repository = "https://github.com/ImanSeyed/riftrace"
+description = "A library for interacting with Ftrace Linux kernel internal tracer"
+keywords = [
+    "ftrace",
+    "function_tracer"
+]
+license = "MIT"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
