@@ -134,3 +134,10 @@ pub fn set_ftrace_pid(pids: &[u32], append: bool) -> RifResult<()> {
 
     Ok(())
 }
+
+/// Set tracer back to `nop` and disable tracing.
+pub fn cleanup_tracing() -> RifResult<()> {
+    set_current_tracer(Tracer::Nop)?;
+    set_tracing_on(TracingStat::Off)?;
+    Ok(())
+}
