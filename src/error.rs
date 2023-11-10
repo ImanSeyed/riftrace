@@ -3,6 +3,7 @@ pub enum Error {
     InvalidTracer,
     InvalidPID,
     TracingIsOff,
+    FailedOpenToWrite,
     Io(std::io::Error),
     Parse(std::num::ParseIntError),
 }
@@ -15,6 +16,7 @@ impl std::fmt::Display for Error {
             Error::InvalidTracer => write!(f, "Invalid or unsupported tracer."),
             Error::InvalidPID => write!(f, "Invalid PID."),
             Error::TracingIsOff => write!(f, "Tracing is off."),
+            Error::FailedOpenToWrite => write!(f, "Failed open the file in tracefs for writing."),
             Error::Io(cause) => write!(f, "I/O Error: {}", cause),
             Error::Parse(cause) => write!(f, "Parse Error: {}", cause),
         }
