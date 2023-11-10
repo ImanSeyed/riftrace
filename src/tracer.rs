@@ -15,26 +15,26 @@ pub enum Tracer {
     /// application.
     Block,
     /// The Hardware Latency tracer is used to detect if the hardware
-    ///	produces any latency. See "Hardware Latency Detector" section
-    ///	below.
+    /// produces any latency. See "Hardware Latency Detector" section
+    /// below.
     HardwareLatency,
     /// Traces the areas that disable interrupts and saves
-    ///	the trace with the longest max latency.
-    ///	See tracing_max_latency. When a new max is recorded,
-    ///	it replaces the old trace. It is best to view this
-    ///	trace with the latency-format option enabled, which
-    ///	happens automatically when the tracer is selected.
+    /// the trace with the longest max latency.
+    /// See tracing_max_latency. When a new max is recorded,
+    /// it replaces the old trace. It is best to view this
+    /// trace with the latency-format option enabled, which
+    /// happens automatically when the tracer is selected.
     IRQsOff,
     /// Similar to irqsoff but traces and records the amount of
-    ///	time for which preemption is disabled.
+    /// time for which preemption is disabled.
     PreemptOff,
     /// Similar to irqsoff and preemptoff, but traces and
-    ///	records the largest time for which irqs and/or preemption
-    ///	is disabled.
+    /// records the largest time for which irqs and/or preemption
+    /// is disabled.
     PreemptIRQsOff,
     /// Traces and records the max latency that it takes for
-    ///	the highest priority task to get scheduled after
-    ///	it has been woken up.
+    /// the highest priority task to get scheduled after
+    /// it has been woken up.
     /// Traces all tasks as an average developer would expect.
     Wakeup,
     /// Traces and records the max latency that it takes for just
@@ -42,22 +42,22 @@ pub enum Tracer {
     /// for those interested in wake up timings of RT tasks.
     WakeupRealtime,
     /// Traces and records the max latency that it takes for
-    ///	a SCHED_DEADLINE task to be woken (as the "wakeup" and
-    ///	"wakeup_rt" does).
+    /// a SCHED_DEADLINE task to be woken (as the "wakeup" and
+    /// "wakeup_rt" does).
     WakeupDeadline,
     /// A special tracer that is used to trace binary module.
-    ///	It will trace all the calls that a module makes to the
-    ///	hardware. Everything it writes and reads from the I/O
-    ///	as well.
+    /// It will trace all the calls that a module makes to the
+    /// hardware. Everything it writes and reads from the I/O
+    /// as well.
     MMIOTrace,
     /// This tracer can be configured when tracing likely/unlikely
-    ///	calls within the kernel. It will trace when a likely and
-    ///	unlikely branch is hit and if it was correct in its prediction
-    ///	of being correct.
+    /// calls within the kernel. It will trace when a likely and
+    /// unlikely branch is hit and if it was correct in its prediction
+    /// of being correct.
     Branch,
     /// This is the "trace nothing" tracer. To remove all
-    ///	tracers from tracing simply echo "nop" into
-    ///	current_tracer.
+    /// tracers from tracing simply echo "nop" into
+    /// current_tracer.
     Nop,
 }
 
