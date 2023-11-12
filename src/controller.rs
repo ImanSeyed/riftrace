@@ -3,11 +3,13 @@ use std::fs::{self, File};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
+/// Controller providing methods to manage core functionalities of ftrace.
 pub struct Controller {
     tracefs_path: PathBuf,
 }
 
 impl Controller {
+    /// Create a new `Controller`.
     pub fn new() -> Self {
         Controller {
             tracefs_path: if cfg!(feature = "old-linux") {
@@ -18,10 +20,13 @@ impl Controller {
         }
     }
 
+    /// Generates the full path by combining `subpath`
+    /// with `tracefs_path`.
     fn get_fullpath<P: AsRef<Path>>(&self, subpath: P) -> PathBuf {
         self.tracefs_path.join(subpath)
     }
 
+    //// Open a file located at `subpath` within the tracefs.
     fn open_to_write(&self, subpath: PathBuf, with_append: bool) -> RifResult<File> {
         fs::OpenOptions::new()
             .write(true)
@@ -31,7 +36,7 @@ impl Controller {
     }
 
     /// Returns the output of the trace in a human
-    /// readable format
+    /// readable format.
     pub fn trace(&self) -> RifResult<String> {
         match self.is_tracing_on()? {
             true => Ok(fs::read_to_string(self.get_fullpath("trace"))?),
