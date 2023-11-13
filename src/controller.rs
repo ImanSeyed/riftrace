@@ -5,18 +5,14 @@ use std::path::{Path, PathBuf};
 
 /// Controller providing methods to manage core functionalities of ftrace.
 pub struct Controller {
-    tracefs_path: PathBuf,
+    tracefs_path: Option<PathBuf>,
 }
 
 impl Controller {
     /// Create a new `Controller`.
     pub fn new() -> Self {
         Controller {
-            tracefs_path: if cfg!(feature = "old-linux") {
-                PathBuf::from("/sys/kernel/debug/tracing")
-            } else {
-                PathBuf::from("/sys/kernel/tracing")
-            },
+            tracefs_path: Controller::find_tracefs_dirs().and_then(|vec| vec.into_iter().nth(0)),
         }
     }
 
@@ -43,7 +39,10 @@ impl Controller {
     /// Generates the full path by combining `subpath`
     /// with `tracefs_path`.
     fn get_fullpath<P: AsRef<Path>>(&self, subpath: P) -> PathBuf {
-        self.tracefs_path.join(subpath)
+        match &self.tracefs_path {
+            Some(tracefs_path) => tracefs_path.join(subpath),
+            None => panic!("There is no tracefs available to work on."),
+        }
     }
 
     //// Open a file located at `subpath` within the tracefs.
