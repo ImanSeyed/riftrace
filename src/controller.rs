@@ -20,6 +20,26 @@ impl Controller {
         }
     }
 
+    /// Find tracefs directories from /proc/mounts.
+    pub fn find_tracefs_dirs() -> Option<Vec<PathBuf>> {
+        let mut tracefs_dirs = Vec::<PathBuf>::new();
+        let mounts_content = fs::read_to_string("/proc/mounts").unwrap();
+        for line in mounts_content.lines() {
+            let words: Vec<&str> = line.split_whitespace().collect();
+            if words.get(2) == Some(&"tracefs") {
+                if let Some(path) = words.get(1) {
+                    tracefs_dirs.push(PathBuf::from(path));
+                }
+            }
+        }
+
+        if tracefs_dirs.is_empty() {
+            None
+        } else {
+            Some(tracefs_dirs)
+        }
+    }
+
     /// Generates the full path by combining `subpath`
     /// with `tracefs_path`.
     fn get_fullpath<P: AsRef<Path>>(&self, subpath: P) -> PathBuf {
