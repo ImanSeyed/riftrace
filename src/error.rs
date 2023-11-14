@@ -4,6 +4,7 @@ pub enum Error {
     InvalidPID,
     TracingIsOff,
     FailedOpenToWrite,
+    MountTracefsFailed(Box<dyn std::error::Error>),
     Io(std::io::Error),
     Parse(std::num::ParseIntError),
 }
@@ -17,6 +18,7 @@ impl std::fmt::Display for Error {
             Error::InvalidPID => write!(f, "Invalid PID."),
             Error::TracingIsOff => write!(f, "Tracing is off."),
             Error::FailedOpenToWrite => write!(f, "Failed open the file in tracefs for writing."),
+            Error::MountTracefsFailed(errno) => write!(f, "Failed to mount tracefs: {}", errno),
             Error::Io(cause) => write!(f, "I/O Error: {}", cause),
             Error::Parse(cause) => write!(f, "Parse Error: {}", cause),
         }
