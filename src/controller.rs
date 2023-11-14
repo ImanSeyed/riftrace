@@ -3,6 +3,8 @@ use std::fs::{self, File};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
+static TRACEFS_PATH: &str = "/sys/kernel/tracing";
+
 /// Controller providing methods to manage core functionalities of ftrace.
 pub struct Controller {
     tracefs_path: Option<PathBuf>,
@@ -33,6 +35,22 @@ impl Controller {
             None
         } else {
             Some(tracefs_dirs)
+        }
+    }
+
+    /// Tries to mount tracefs to TRACEFS_PATH.
+    pub fn mount_tracefs() -> RifResult<()> {
+        match nix::mount::mount::<str, str, str, str>(
+            Some("nodev"),
+            TRACEFS_PATH,
+            Some("tracefs"),
+            nix::mount::MsFlags::MS_NOSUID
+                | nix::mount::MsFlags::MS_NOEXEC
+                | nix::mount::MsFlags::MS_NODEV,
+            None,
+        ) {
+            Ok(()) => Ok(()),
+            Err(errno) => Err(RifError::MountTracefsFailed(Box::new(errno))),
         }
     }
 
