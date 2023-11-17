@@ -1,21 +1,25 @@
 use crate::{RifError, RifResult, Tracer, TracingStat};
 use std::fs::{self, File};
-use std::io::Write;
 use std::path::{Path, PathBuf};
 
 static TRACEFS_PATH: &str = "/sys/kernel/tracing";
 
-/// Controller providing methods to manage core functionalities of ftrace.
-pub struct Controller {
+/// TracingControl providing methods to manage core functionalities of ftrace.
+pub struct TracingControl {
     tracefs_path: Option<PathBuf>,
 }
 
-impl Controller {
-    /// Create a new `Controller`.
+impl TracingControl {
+    /// Create a new `TracingControl`.
     pub fn new() -> Self {
-        Controller {
-            tracefs_path: Controller::find_tracefs_dirs().and_then(|vec| vec.into_iter().nth(0)),
+        TracingControl {
+            tracefs_path: TracingControl::find_tracefs_dirs()
+                .and_then(|vec| vec.into_iter().nth(0)),
         }
+    }
+
+    pub fn get_tracefs_path(&self) -> &Option<PathBuf> {
+        &self.tracefs_path
     }
 
     /// Find tracefs directories from /proc/mounts.
@@ -56,7 +60,7 @@ impl Controller {
 
     /// Generates the full path by combining `subpath`
     /// with `tracefs_path`.
-    fn get_fullpath<P: AsRef<Path>>(&self, subpath: P) -> PathBuf {
+    pub fn get_fullpath<P: AsRef<Path>>(&self, subpath: P) -> PathBuf {
         match &self.tracefs_path {
             Some(tracefs_path) => tracefs_path.join(subpath),
             None => panic!("There is no tracefs available to work on."),
@@ -64,7 +68,7 @@ impl Controller {
     }
 
     //// Open a file located at `subpath` within the tracefs.
-    fn open_to_write(&self, subpath: PathBuf, with_append: bool) -> RifResult<File> {
+    pub fn open_to_write(&self, subpath: PathBuf, with_append: bool) -> RifResult<File> {
         fs::OpenOptions::new()
             .write(true)
             .append(with_append)
@@ -128,58 +132,6 @@ impl Controller {
         Err(RifError::InvalidTracer)
     }
 
-    /// Limit the trace to only `filter`ed functions.
-    pub fn set_ftrace_filter(&self, filter: &str, with_append: bool) -> RifResult<()> {
-        let mut file = self.open_to_write(PathBuf::from("set_ftrace_filter"), with_append)?;
-        writeln!(file, "{}", filter)?;
-        Ok(())
-    }
-
-    /// Function passed to this function will cause the function graph
-    /// tracer to only trace these functions and the functions that
-    /// they call.
-    pub fn set_graph_function(&self, filter: &str, with_append: bool) -> RifResult<()> {
-        let mut file = self.open_to_write(PathBuf::from("set_graph_function"), with_append)?;
-        writeln!(file, "{}", filter)?;
-        Ok(())
-    }
-
-    /// `mark` will be written into the ftrace buffer.
-    pub fn trace_marker(&self, mark: &str) -> RifResult<()> {
-        fs::write(self.get_fullpath("trace_marker"), mark)?;
-        Ok(())
-    }
-
-    /// Any function that is added here will not
-    /// be traced.
-    pub fn set_ftrace_notrace(&self, filter: &str, with_append: bool) -> RifResult<()> {
-        let mut file = self.open_to_write(PathBuf::from("set_ftrace_notrace"), with_append)?;
-        writeln!(file, "{}", filter)?;
-        Ok(())
-    }
-
-    /// Have the function tracer only trace the threads whose PID are
-    /// in the `pids`.
-    pub fn set_ftrace_pid(&self, pids: &[u32], with_append: bool) -> RifResult<()> {
-        let pid_max = fs::read_to_string("/proc/sys/kernel/pid_max")?.parse()?;
-
-        let pids_string = pids
-            .iter()
-            .map(|pid| {
-                if *pid > pid_max {
-                    return Err(RifError::InvalidPID);
-                }
-                Ok(pid.to_string())
-            })
-            .collect::<RifResult<Vec<_>>>()?
-            .join(" ");
-
-        let mut file = self.open_to_write(PathBuf::from("set_ftrace_pid"), with_append)?;
-        writeln!(file, "{}", pids_string)?;
-
-        Ok(())
-    }
-
     /// Set tracer back to `nop` and disable tracing.
     pub fn cleanup_tracing(&self) -> RifResult<()> {
         self.set_current_tracer(Tracer::Nop)?;
@@ -188,7 +140,7 @@ impl Controller {
     }
 }
 
-impl Default for Controller {
+impl Default for TracingControl {
     fn default() -> Self {
         Self::new()
     }
