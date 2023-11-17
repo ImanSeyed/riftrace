@@ -10,6 +10,7 @@ pub struct FilterOps<'a> {
 }
 
 impl<'a> FilterOps<'a> {
+    /// Create a new `FilterOps`.
     pub fn new(trace_ctrl: &'a TracingControl) -> Self {
         FilterOps { trace_ctrl }
     }
