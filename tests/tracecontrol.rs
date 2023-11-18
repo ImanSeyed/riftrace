@@ -21,10 +21,10 @@ fn should_set_current_tracer() {
 fn should_enable_disable_tracer() {
     let trace_ctrl = TracingControl::new();
     trace_ctrl.set_tracing_on(TracingStat::On).unwrap();
-    assert_eq!(trace_ctrl.is_tracing_on().unwrap(), true);
+    assert!(trace_ctrl.is_tracing_on().unwrap());
 
     trace_ctrl.set_tracing_on(TracingStat::Off).unwrap();
-    assert_eq!(trace_ctrl.is_tracing_on().unwrap(), false);
+    assert!(!trace_ctrl.is_tracing_on().unwrap());
 
     trace_ctrl.cleanup_tracing().unwrap();
 }
