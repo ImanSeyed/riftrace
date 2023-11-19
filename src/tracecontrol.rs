@@ -1,4 +1,5 @@
 use crate::{RifError, RifResult, Tracer, TracingStat};
+use nix::{errno::Errno, sys::stat::Mode, unistd};
 use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 
@@ -7,6 +8,7 @@ static TRACEFS_PATH: &str = "/sys/kernel/tracing";
 /// TracingControl providing methods to manage core functionalities of ftrace.
 pub struct TracingControl {
     tracefs_path: Option<PathBuf>,
+    is_instance: bool,
 }
 
 impl TracingControl {
@@ -15,11 +17,38 @@ impl TracingControl {
         TracingControl {
             tracefs_path: TracingControl::find_tracefs_dirs()
                 .and_then(|vec| vec.into_iter().nth(0)),
+            is_instance: false,
         }
     }
 
-    pub fn get_tracefs_path(&self) -> &Option<PathBuf> {
-        &self.tracefs_path
+    pub fn from(instance: &str) -> RifResult<Self> {
+        let mut trace_ctrl = TracingControl::new();
+
+        let result: String = match trace_ctrl.tracefs_path {
+            Some(mut path) => {
+                path.push("instances");
+                path.push(instance);
+                path.to_str().unwrap().to_string()
+            }
+            None => panic!("No tracefs to work on."),
+        };
+
+        let instance_path: &str = &result;
+        trace_ctrl.is_instance = true;
+        trace_ctrl.tracefs_path = Some(PathBuf::from(instance_path));
+        match unistd::mkdir(instance_path, Mode::from_bits_truncate(0o750)) {
+            Ok(()) => Ok(trace_ctrl),
+            Err(errno) if errno == Errno::from_i32(libc::EEXIST) => Ok(trace_ctrl),
+            Err(errno) => Err(RifError::InstanceMkdirFailed(Box::new(errno))),
+        }
+    }
+
+    pub fn get_tracefs_path(&self) -> Option<PathBuf> {
+        self.tracefs_path.clone()
+    }
+
+    pub fn get_is_instance(&self) -> bool {
+        self.is_instance
     }
 
     /// Find tracefs directories from /proc/mounts.
