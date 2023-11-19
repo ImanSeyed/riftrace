@@ -28,3 +28,12 @@ fn should_enable_disable_tracer() {
 
     trace_ctrl.cleanup_tracing().unwrap();
 }
+
+#[test]
+fn should_create_instance() {
+    let trace_ctrl = TracingControl::from("bar").unwrap();
+    assert!(trace_ctrl
+        .get_tracefs_path()
+        .unwrap()
+        .ends_with("instances/bar"));
+}
