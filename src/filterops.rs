@@ -1,5 +1,5 @@
 use crate::commonctrl::CommonController;
-use crate::tracecontrol::TracingControl;
+use crate::mainctrl::MainController;
 use crate::{RifError, RifResult};
 use std::fs;
 use std::io::Write;
@@ -7,12 +7,12 @@ use std::path::PathBuf;
 
 /// Facilitates operations involving filtering of tracing events and functions.
 pub struct FilterOps<'a> {
-    trace_ctrl: &'a TracingControl,
+    trace_ctrl: &'a MainController,
 }
 
 impl<'a> FilterOps<'a> {
     /// Create a new `FilterOps`.
-    pub fn new(trace_ctrl: &'a TracingControl) -> Self {
+    pub fn new(trace_ctrl: &'a MainController) -> Self {
         FilterOps { trace_ctrl }
     }
 

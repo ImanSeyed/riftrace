@@ -3,8 +3,8 @@ This library provides a simple API for handling Ftrace files.
 
 # Examples
 ```rust
-use riftrace::{Tracer, TracingStat, TracingControl, FilterOps, CommonController};
-let trace_ctrl = TracingControl::new();
+use riftrace::{Tracer, TracingStat, MainController, FilterOps, CommonController};
+let trace_ctrl = MainController::new();
 let filter_operator = FilterOps::new(&trace_ctrl);
 // Change current tracer from nop to function_graph
 trace_ctrl.set_current_tracer(Tracer::FunctionGraph).unwrap();
