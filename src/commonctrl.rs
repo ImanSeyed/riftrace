@@ -22,7 +22,7 @@ pub trait CommonController {
             .write(true)
             .append(with_append)
             .open(self.get_joined_path(subpath))
-            .map_err(|_| RifError::FailedOpenToWrite)
+            .map_err(|_| RifError::OpenToWriteFailed)
     }
 
     /// Enable or disable writing to the trace
@@ -69,7 +69,7 @@ pub trait CommonController {
     fn trace(&self) -> RifResult<String> {
         match self.is_tracing_on()? {
             true => Ok(fs::read_to_string(self.get_joined_path("trace"))?),
-            false => Err(RifError::TracingIsOff),
+            false => Err(RifError::TracingDisabled),
         }
     }
 
