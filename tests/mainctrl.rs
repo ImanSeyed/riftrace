@@ -1,9 +1,9 @@
 use crate::riftrace::CommonController;
-use riftrace::{self, Tracer, TracingControl, TracingStat};
+use riftrace::{self, MainController, Tracer, TracingStat};
 
 #[test]
 fn should_set_current_tracer() {
-    let trace_ctrl = TracingControl::new();
+    let trace_ctrl = MainController::new();
     trace_ctrl.set_current_tracer(Tracer::Function).unwrap();
     assert_eq!(trace_ctrl.get_current_tracer().unwrap(), Tracer::Function);
 
@@ -20,7 +20,7 @@ fn should_set_current_tracer() {
 
 #[test]
 fn should_enable_disable_tracer() {
-    let trace_ctrl = TracingControl::new();
+    let trace_ctrl = MainController::new();
     trace_ctrl.set_tracing_on(TracingStat::On).unwrap();
     assert!(trace_ctrl.is_tracing_on().unwrap());
 
@@ -32,6 +32,6 @@ fn should_enable_disable_tracer() {
 
 #[test]
 fn should_obtain_instance() {
-    let trace_ctrl = TracingControl::obtain_instance("bar").unwrap();
+    let trace_ctrl = MainController::obtain_instance("bar").unwrap();
     assert!(trace_ctrl.get_path().unwrap().ends_with("instances/bar"));
 }

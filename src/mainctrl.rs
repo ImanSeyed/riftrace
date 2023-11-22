@@ -6,16 +6,16 @@ use std::path::PathBuf;
 
 static TRACEFS_PATH: &str = "/sys/kernel/tracing";
 
-/// TracingControl providing methods to manage core functionalities of ftrace.
-pub struct TracingControl {
+/// Providing methods to manage core functionalities of ftrace.
+pub struct MainController {
     tracefs_path: Option<PathBuf>,
 }
 
-impl TracingControl {
-    /// Create a new `TracingControl`.
+impl MainController {
+    /// Creates a new `MainController`.
     pub fn new() -> Self {
-        TracingControl {
-            tracefs_path: TracingControl::find_tracefs_dirs()
+        MainController {
+            tracefs_path: MainController::find_tracefs_dirs()
                 .and_then(|vec| vec.into_iter().nth(0)),
         }
     }
@@ -55,13 +55,13 @@ impl TracingControl {
     }
 }
 
-impl Default for TracingControl {
+impl Default for MainController {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl CommonController for TracingControl {
+impl CommonController for MainController {
     fn get_path(&self) -> Option<PathBuf> {
         self.tracefs_path.clone()
     }
