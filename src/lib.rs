@@ -3,7 +3,7 @@
 //! # Examples
 //!
 //! ```
-//! use riftrace::{Tracer, TracingStat, TracingControl, FilterOps};
+//! use riftrace::{Tracer, TracingStat, TracingControl, FilterOps, CommonController};
 //! let trace_ctrl = TracingControl::new();
 //! let filter_operator = FilterOps::new(&trace_ctrl);
 //! // Change current tracer from nop to function_graph
@@ -16,13 +16,17 @@
 //! println!("{}", trace_ctrl.trace().unwrap());
 //! ```
 
+mod commonctrl;
 mod error;
 mod filterops;
+mod instancectrl;
 mod markerops;
 mod tracecontrol;
 mod tracer;
 
+pub use commonctrl::*;
 pub use filterops::*;
+pub use instancectrl::*;
 pub use markerops::*;
 pub use tracecontrol::*;
 pub use tracer::{Tracer, TracingStat};

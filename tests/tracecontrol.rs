@@ -1,3 +1,4 @@
+use crate::riftrace::CommonController;
 use riftrace::{self, Tracer, TracingControl, TracingStat};
 
 #[test]
@@ -30,10 +31,7 @@ fn should_enable_disable_tracer() {
 }
 
 #[test]
-fn should_create_instance() {
-    let trace_ctrl = TracingControl::from("bar").unwrap();
-    assert!(trace_ctrl
-        .get_tracefs_path()
-        .unwrap()
-        .ends_with("instances/bar"));
+fn should_obtain_instance() {
+    let trace_ctrl = TracingControl::obtain_instance("bar").unwrap();
+    assert!(trace_ctrl.get_path().unwrap().ends_with("instances/bar"));
 }

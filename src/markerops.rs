@@ -1,3 +1,4 @@
+use crate::commonctrl::CommonController;
 use crate::tracecontrol::TracingControl;
 use crate::RifResult;
 use std::fs;
@@ -15,7 +16,7 @@ impl<'a> MarkerOps<'a> {
 
     /// `mark` will be written into the ftrace buffer.
     pub fn trace_marker(&self, mark: &str) -> RifResult<()> {
-        fs::write(self.trace_ctrl.get_fullpath("trace_marker"), mark)?;
+        fs::write(self.trace_ctrl.get_joined_path("trace_marker"), mark)?;
         Ok(())
     }
 }

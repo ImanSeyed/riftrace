@@ -1,3 +1,4 @@
+use crate::commonctrl::CommonController;
 use crate::tracecontrol::TracingControl;
 use crate::{RifError, RifResult};
 use std::fs;
