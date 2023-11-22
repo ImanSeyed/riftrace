@@ -1,11 +1,11 @@
 #[derive(Debug)]
 pub enum Error {
     InvalidTracer,
-    InvalidPID,
-    TracingIsOff,
-    FailedOpenToWrite,
-    InstanceMkdirFailed(Box<dyn std::error::Error>),
-    MountTracefsFailed(Box<dyn std::error::Error>),
+    InvalidProcessID,
+    TracingDisabled,
+    OpenToWriteFailed,
+    InstanceCreationFailed(Box<dyn std::error::Error>),
+    TracefsMountFailed(Box<dyn std::error::Error>),
     Io(std::io::Error),
     Parse(std::num::ParseIntError),
 }
@@ -16,13 +16,13 @@ impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Error::InvalidTracer => write!(f, "Invalid or unsupported tracer."),
-            Error::InvalidPID => write!(f, "Invalid PID."),
-            Error::TracingIsOff => write!(f, "Tracing is off."),
-            Error::FailedOpenToWrite => write!(f, "Failed open the file in tracefs for writing."),
-            Error::InstanceMkdirFailed(errno) => {
+            Error::InvalidProcessID => write!(f, "Invalid PID."),
+            Error::TracingDisabled => write!(f, "Tracing is off."),
+            Error::OpenToWriteFailed => write!(f, "Failed open the file in tracefs for writing."),
+            Error::InstanceCreationFailed(errno) => {
                 write!(f, "Failed to create an instance: {}", errno)
             }
-            Error::MountTracefsFailed(errno) => write!(f, "Failed to mount tracefs: {}", errno),
+            Error::TracefsMountFailed(errno) => write!(f, "Failed to mount tracefs: {}", errno),
             Error::Io(cause) => write!(f, "I/O Error: {}", cause),
             Error::Parse(cause) => write!(f, "Parse Error: {}", cause),
         }

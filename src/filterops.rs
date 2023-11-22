@@ -55,7 +55,7 @@ impl<'a> FilterOps<'a> {
             .iter()
             .map(|pid| {
                 if *pid > pid_max {
-                    return Err(RifError::InvalidPID);
+                    return Err(RifError::InvalidProcessID);
                 }
                 Ok(pid.to_string())
             })

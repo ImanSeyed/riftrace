@@ -29,10 +29,10 @@ impl MainController {
                 match unistd::mkdir(instance_path, Mode::from_bits_truncate(0o750)) {
                     Ok(()) => Ok(instance_ctrl),
                     Err(errno) if errno == Errno::from_i32(libc::EEXIST) => Ok(instance_ctrl),
-                    Err(errno) => Err(RifError::InstanceMkdirFailed(Box::new(errno))),
+                    Err(errno) => Err(RifError::InstanceCreationFailed(Box::new(errno))),
                 }
             }
-            None => Err(RifError::InstanceMkdirFailed(Box::new(Errno::from_i32(
+            None => Err(RifError::InstanceCreationFailed(Box::new(Errno::from_i32(
                 libc::ENOENT,
             )))),
         }
@@ -50,7 +50,7 @@ impl MainController {
             None,
         ) {
             Ok(()) => Ok(()),
-            Err(errno) => Err(RifError::MountTracefsFailed(Box::new(errno))),
+            Err(errno) => Err(RifError::TracefsMountFailed(Box::new(errno))),
         }
     }
 }
