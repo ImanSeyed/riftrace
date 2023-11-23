@@ -1,5 +1,5 @@
-use crate::riftrace::CommonController;
-use riftrace::{self, MainController, Tracer, TracingStat};
+use crate::riftrace::controller::{CommonController, MainController};
+use riftrace::{self, Tracer, TracingStat};
 
 #[test]
 fn should_set_current_tracer() {
