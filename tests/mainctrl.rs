@@ -32,6 +32,7 @@ fn should_enable_disable_tracer() {
 
 #[test]
 fn should_obtain_instance() {
-    let trace_ctrl = MainController::obtain_instance("bar").unwrap();
-    assert!(trace_ctrl.get_path().unwrap().ends_with("instances/bar"));
+    let trace_ctrl = MainController::new();
+    let instance = trace_ctrl.obtain_instance("bar").unwrap();
+    assert!(instance.get_path().unwrap().ends_with("instances/bar"));
 }

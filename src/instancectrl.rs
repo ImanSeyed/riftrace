@@ -6,12 +6,19 @@ pub struct InstanceController {
 }
 
 impl InstanceController {
-    pub fn new(instance: &str) -> Self {
+    pub fn new(instance: Option<&str>) -> Self {
         let mut instance_path = PathBuf::from("instances");
-        instance_path.push(instance);
+        let instance_path_opt = match instance {
+            Some(inst) => {
+                instance_path.push(inst);
+                InstanceController::find_tracefs_dirs()
+                    .and_then(|vec| vec.into_iter().nth(0).map(|path| path.join(&instance_path)))
+            }
+            None => None,
+        };
+
         InstanceController {
-            instance_path: InstanceController::find_tracefs_dirs()
-                .and_then(|vec| vec.into_iter().nth(0).map(|path| path.join(instance_path))),
+            instance_path: instance_path_opt,
         }
     }
 }

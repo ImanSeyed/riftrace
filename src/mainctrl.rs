@@ -20,9 +20,12 @@ impl MainController {
         }
     }
 
-    pub fn obtain_instance(instance: &str) -> RifResult<InstanceController> {
-        let instance_ctrl = InstanceController::new(instance);
-        let instance_path = instance_ctrl.get_path();
+    pub fn obtain_instance(&self, instance: &str) -> RifResult<InstanceController> {
+        let mut instance_ctrl = InstanceController::new(None);
+        let instance_path = self.get_path().and_then(|tracefs_path| {
+            instance_ctrl.set_path(Some(tracefs_path.join("instances").join(instance)));
+            instance_ctrl.get_path()
+        });
 
         match &instance_path {
             Some(instance_path) => {
