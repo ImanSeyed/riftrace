@@ -3,7 +3,9 @@
 //! # Examples
 //!
 //! ```
-//! use riftrace::{Tracer, TracingStat, MainController, FilterOps, CommonController};
+//! use riftrace::controller::{CommonController, MainController};
+//! use riftrace::operations::FilterOps;
+//! use riftrace::{Tracer, TracingStat};
 //! let trace_ctrl = MainController::new();
 //! let filter_operator = FilterOps::new(&trace_ctrl);
 //! // Change current tracer from nop to function_graph
@@ -24,11 +26,17 @@ mod mainctrl;
 mod markerops;
 mod tracer;
 
-pub use commonctrl::*;
-pub use filterops::*;
-pub use instancectrl::*;
-pub use mainctrl::*;
-pub use markerops::*;
+pub mod controller {
+    pub use super::commonctrl::*;
+    pub use super::instancectrl::*;
+    pub use super::mainctrl::*;
+}
+
+pub mod operations {
+    pub use super::filterops::*;
+    pub use super::markerops::*;
+}
+
 pub use tracer::{Tracer, TracingStat};
 pub type RifError = error::Error;
 pub type RifResult<T> = Result<T, RifError>;
