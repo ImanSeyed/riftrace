@@ -46,9 +46,8 @@ impl<'a> FilterOps<'a> {
         Ok(())
     }
 
-    /// Have the function tracer only trace the threads whose PID are
-    /// in the `pids`.
-    pub fn set_ftrace_pid(&self, pids: &[u32], with_append: bool) -> RifResult<()> {
+    /// Check and merge PIDs into a string.
+    fn pids_as_string(&self, pids: &[u32]) -> RifResult<String> {
         let pid_max = fs::read_to_string("/proc/sys/kernel/pid_max")?.parse()?;
 
         let pids_string = pids
@@ -62,9 +61,27 @@ impl<'a> FilterOps<'a> {
             .collect::<RifResult<Vec<_>>>()?
             .join(" ");
 
+        Ok(pids_string)
+    }
+
+    /// Modify the tracer function to exclusively trace threads with PIDs present
+    /// in the pids list.
+    pub fn set_ftrace_pid(&self, pids: &[u32], with_append: bool) -> RifResult<()> {
+        let pids_string = self.pids_as_string(pids)?;
         let mut file = self
             .trace_ctrl
             .open_to_write(PathBuf::from("set_ftrace_pid"), with_append)?;
+        writeln!(file, "{}", pids_string)?;
+
+        Ok(())
+    }
+
+    /// The tracer function should exclude tracing threads with PIDs listed in pids.
+    pub fn set_ftrace_notrace_pid(&self, pids: &[u32], with_append: bool) -> RifResult<()> {
+        let pids_string = self.pids_as_string(pids)?;
+        let mut file = self
+            .trace_ctrl
+            .open_to_write(PathBuf::from("set_ftrace_notrace_pid"), with_append)?;
         writeln!(file, "{}", pids_string)?;
 
         Ok(())
