@@ -1,4 +1,4 @@
-use crate::commonctrl::CommonController;
+use crate::ctrltrait::ControllerTrait;
 use crate::mainctrl::MainController;
 use crate::RifResult;
 use std::fs;

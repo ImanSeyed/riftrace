@@ -1,4 +1,4 @@
-use crate::riftrace::controller::{CommonController, MainController};
+use crate::riftrace::controller::{ControllerTrait, MainController};
 use riftrace::{self, Tracer, TracingStat};
 
 #[test]

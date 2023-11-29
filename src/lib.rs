@@ -3,7 +3,7 @@
 //! # Examples
 //!
 //! ```
-//! use riftrace::controller::{CommonController, MainController};
+//! use riftrace::controller::{ControllerTrait, MainController};
 //! use riftrace::operations::FilterOps;
 //! use riftrace::{Tracer, TracingStat};
 //! let trace_ctrl = MainController::new();
@@ -18,7 +18,7 @@
 //! println!("{}", trace_ctrl.trace().unwrap());
 //! ```
 
-mod commonctrl;
+mod ctrltrait;
 mod error;
 mod filterops;
 mod instancectrl;
@@ -27,7 +27,7 @@ mod markerops;
 mod tracer;
 
 pub mod controller {
-    pub use super::commonctrl::*;
+    pub use super::ctrltrait::*;
     pub use super::instancectrl::*;
     pub use super::mainctrl::*;
 }
