@@ -1,6 +1,7 @@
 use crate::tracer::{Tracer, TracingStat};
 use crate::{RifError, RifResult};
-use std::fs::{self, File};
+use std::fs;
+use std::io::Write;
 use std::path::{Path, PathBuf};
 
 pub trait ControllerTrait {
@@ -16,13 +17,22 @@ pub trait ControllerTrait {
         }
     }
 
-    //// Open a file located at `subpath` within the tracefs.
-    fn open_to_write(&self, subpath: PathBuf, with_append: bool) -> RifResult<File> {
-        fs::OpenOptions::new()
+    /// Write the `content` to a file in the tracefs
+    /// located at `subpath`.
+    fn write_to_subpath(
+        &self,
+        subpath: PathBuf,
+        with_append: bool,
+        content: &str,
+    ) -> RifResult<()> {
+        let mut file = fs::OpenOptions::new()
             .write(true)
             .append(with_append)
-            .open(self.get_joined_path(subpath))
-            .map_err(|_| RifError::OpenToWriteFailed)
+            .open(self.get_joined_path(subpath))?;
+
+        writeln!(file, "{}", content)?;
+
+        Ok(())
     }
 
     /// Enable or disable writing to the trace
