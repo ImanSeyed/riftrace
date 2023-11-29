@@ -3,7 +3,7 @@ use crate::{RifError, RifResult};
 use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 
-pub trait CommonController {
+pub trait ControllerTrait {
     fn get_path(&self) -> Option<PathBuf>;
     fn set_path(&mut self, path: Option<PathBuf>);
 

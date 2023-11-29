@@ -1,4 +1,4 @@
-use crate::commonctrl::CommonController;
+use crate::ctrltrait::ControllerTrait;
 use crate::instancectrl::InstanceController;
 use crate::{RifError, RifResult};
 use nix::{errno::Errno, sys::stat::Mode, unistd};
@@ -64,7 +64,7 @@ impl Default for MainController {
     }
 }
 
-impl CommonController for MainController {
+impl ControllerTrait for MainController {
     fn get_path(&self) -> Option<PathBuf> {
         self.tracefs_path.clone()
     }

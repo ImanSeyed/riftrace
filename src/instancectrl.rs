@@ -1,4 +1,4 @@
-use crate::commonctrl::CommonController;
+use crate::ctrltrait::ControllerTrait;
 use std::path::PathBuf;
 
 pub struct InstanceController {
@@ -23,7 +23,7 @@ impl InstanceController {
     }
 }
 
-impl CommonController for InstanceController {
+impl ControllerTrait for InstanceController {
     fn get_path(&self) -> Option<PathBuf> {
         self.instance_path.clone()
     }

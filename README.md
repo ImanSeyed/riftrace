@@ -3,7 +3,7 @@ This library provides a simple API for handling Ftrace files.
 
 # Examples
 ```rust
-use riftrace::controller::{CommonController, MainController};
+use riftrace::controller::{ControllerTrait, MainController};
 use riftrace::operations::FilterOps;
 use riftrace::{Tracer, TracingStat};
 let trace_ctrl = MainController::new();
