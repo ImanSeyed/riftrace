@@ -2,7 +2,6 @@ use crate::ctrltrait::ControllerTrait;
 use crate::mainctrl::MainController;
 use crate::{RifError, RifResult};
 use std::fs;
-use std::io::Write;
 use std::path::PathBuf;
 
 /// Facilitates operations involving filtering of tracing events and functions.
@@ -18,32 +17,23 @@ impl<'a> FilterOps<'a> {
 
     /// Limit the trace to only `filter`ed functions.
     pub fn set_ftrace_filter(&self, filter: &str, with_append: bool) -> RifResult<()> {
-        let mut file = self
-            .trace_ctrl
-            .open_to_write(PathBuf::from("set_ftrace_filter"), with_append)?;
-        writeln!(file, "{}", filter)?;
-        Ok(())
+        self.trace_ctrl
+            .write_to_subpath(PathBuf::from("set_ftrace_filter"), with_append, filter)
     }
 
     /// Any function that is added here will not
     /// be traced.
     pub fn set_ftrace_notrace(&self, filter: &str, with_append: bool) -> RifResult<()> {
-        let mut file = self
-            .trace_ctrl
-            .open_to_write(PathBuf::from("set_ftrace_notrace"), with_append)?;
-        writeln!(file, "{}", filter)?;
-        Ok(())
+        self.trace_ctrl
+            .write_to_subpath(PathBuf::from("set_ftrace_notrace"), with_append, filter)
     }
 
     /// Function passed to this function will cause the function graph
     /// tracer to only trace these functions and the functions that
     /// they call.
     pub fn set_graph_function(&self, filter: &str, with_append: bool) -> RifResult<()> {
-        let mut file = self
-            .trace_ctrl
-            .open_to_write(PathBuf::from("set_graph_function"), with_append)?;
-        writeln!(file, "{}", filter)?;
-        Ok(())
+        self.trace_ctrl
+            .write_to_subpath(PathBuf::from("set_graph_function"), with_append, filter)
     }
 
     /// Check and merge PIDs into a string.
@@ -68,22 +58,17 @@ impl<'a> FilterOps<'a> {
     /// in the pids list.
     pub fn set_ftrace_pid(&self, pids: &[u32], with_append: bool) -> RifResult<()> {
         let pids_string = self.pids_as_string(pids)?;
-        let mut file = self
-            .trace_ctrl
-            .open_to_write(PathBuf::from("set_ftrace_pid"), with_append)?;
-        writeln!(file, "{}", pids_string)?;
-
-        Ok(())
+        self.trace_ctrl
+            .write_to_subpath(PathBuf::from("set_ftrace_pid"), with_append, &pids_string)
     }
 
     /// The tracer function should exclude tracing threads with PIDs listed in pids.
     pub fn set_ftrace_notrace_pid(&self, pids: &[u32], with_append: bool) -> RifResult<()> {
         let pids_string = self.pids_as_string(pids)?;
-        let mut file = self
-            .trace_ctrl
-            .open_to_write(PathBuf::from("set_ftrace_notrace_pid"), with_append)?;
-        writeln!(file, "{}", pids_string)?;
-
-        Ok(())
+        self.trace_ctrl.write_to_subpath(
+            PathBuf::from("set_ftrace_notrace_pid"),
+            with_append,
+            &pids_string,
+        )
     }
 }
