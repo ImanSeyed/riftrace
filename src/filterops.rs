@@ -1,17 +1,17 @@
+use crate::controller::MainController;
 use crate::ctrltrait::ControllerTrait;
-use crate::mainctrl::MainController;
 use crate::{RifError, RifResult};
 use std::fs;
 use std::path::PathBuf;
 
 /// Facilitates operations involving filtering of tracing events and functions.
-pub struct FilterOps<'a> {
-    trace_ctrl: &'a MainController,
+pub struct FilterOps<'a, T: ControllerTrait> {
+    trace_ctrl: &'a T,
 }
 
-impl<'a> FilterOps<'a> {
+impl<'a, T: ControllerTrait> FilterOps<'a, T> {
     /// Create a new `FilterOps`.
-    pub fn new(trace_ctrl: &'a MainController) -> Self {
+    pub fn new(trace_ctrl: &'a T) -> Self {
         FilterOps { trace_ctrl }
     }
 
@@ -26,14 +26,6 @@ impl<'a> FilterOps<'a> {
     pub fn set_ftrace_notrace(&self, filter: &str, with_append: bool) -> RifResult<()> {
         self.trace_ctrl
             .write_to_subpath(PathBuf::from("set_ftrace_notrace"), with_append, filter)
-    }
-
-    /// Function passed to this function will cause the function graph
-    /// tracer to only trace these functions and the functions that
-    /// they call.
-    pub fn set_graph_function(&self, filter: &str, with_append: bool) -> RifResult<()> {
-        self.trace_ctrl
-            .write_to_subpath(PathBuf::from("set_graph_function"), with_append, filter)
     }
 
     /// Check and merge PIDs into a string.
@@ -70,5 +62,15 @@ impl<'a> FilterOps<'a> {
             with_append,
             &pids_string,
         )
+    }
+}
+
+impl<'a> FilterOps<'a, MainController> {
+    /// Function passed to this function will cause the function graph
+    /// tracer to only trace these functions and the functions that
+    /// they call.
+    pub fn set_graph_function(&self, filter: &str, with_append: bool) -> RifResult<()> {
+        self.trace_ctrl
+            .write_to_subpath(PathBuf::from("set_graph_function"), with_append, filter)
     }
 }
