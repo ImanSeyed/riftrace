@@ -30,7 +30,7 @@ pub trait ControllerTrait {
             .append(with_append)
             .open(self.get_joined_path(subpath))?;
 
-        writeln!(file, "{}", content)?;
+        write!(file, "{}", content)?;
 
         Ok(())
     }
@@ -39,8 +39,8 @@ pub trait ControllerTrait {
     /// ring buffer.
     fn set_tracing_on(&self, stat: TracingStat) -> RifResult<()> {
         match stat {
-            TracingStat::On => fs::write(self.get_joined_path("tracing_on"), "1")?,
-            TracingStat::Off => fs::write(self.get_joined_path("tracing_on"), "0")?,
+            TracingStat::On => self.write_to_subpath(PathBuf::from("tracing_on"), false, "1")?,
+            TracingStat::Off => self.write_to_subpath(PathBuf::from("tracing_on"), false, "0")?,
         }
         Ok(())
     }
@@ -105,7 +105,7 @@ pub trait ControllerTrait {
     /// Set the current tracer.
     fn set_current_tracer(&self, tracer: Tracer) -> RifResult<()> {
         if self.get_available_tracers()?.contains(&tracer.to_string()) {
-            fs::write(self.get_joined_path("current_tracer"), tracer.to_string())?;
+            self.write_to_subpath(PathBuf::from("current_tracer"), false, &tracer.to_string())?;
             return Ok(());
         }
         Err(RifError::InvalidTracer)

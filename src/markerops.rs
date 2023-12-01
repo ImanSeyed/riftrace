@@ -1,7 +1,7 @@
 use crate::ctrltrait::ControllerTrait;
 use crate::mainctrl::MainController;
 use crate::RifResult;
-use std::fs;
+use std::path::PathBuf;
 
 /// Provides functionality to manage tracing markers.
 pub struct MarkerOps<'a> {
@@ -16,7 +16,8 @@ impl<'a> MarkerOps<'a> {
 
     /// `mark` will be written into the ftrace buffer.
     pub fn trace_marker(&self, mark: &str) -> RifResult<()> {
-        fs::write(self.trace_ctrl.get_joined_path("trace_marker"), mark)?;
+        self.trace_ctrl
+            .write_to_subpath(PathBuf::from("trace_marker"), false, mark)?;
         Ok(())
     }
 }
