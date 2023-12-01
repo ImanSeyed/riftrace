@@ -1,18 +1,17 @@
 use crate::ctrltrait::ControllerTrait;
-use crate::mainctrl::MainController;
 use crate::RifResult;
 use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
 
 /// Provides functionality to manage tracing markers.
-pub struct MarkerOps<'a> {
-    trace_ctrl: &'a MainController,
+pub struct MarkerOps<'a, T: ControllerTrait> {
+    trace_ctrl: &'a T,
 }
 
-impl<'a> MarkerOps<'a> {
+impl<'a, T: ControllerTrait> MarkerOps<'a, T> {
     /// Create a new `MarkerOps`.
-    pub fn new(trace_ctrl: &'a MainController) -> Self {
+    pub fn new(trace_ctrl: &'a T) -> Self {
         MarkerOps { trace_ctrl }
     }
 
