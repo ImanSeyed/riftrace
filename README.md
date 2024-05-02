@@ -1,5 +1,5 @@
 # Description
-This library provides a simple API for handling Ftrace files.
+This library provides an API for using the Ftrace.
 
 # Examples
 ```rust
@@ -14,6 +14,6 @@ trace_ctrl.set_current_tracer(Tracer::FunctionGraph).unwrap();
 trace_ctrl.set_tracing_on(TracingStat::On).unwrap();
 // Limit the trace to only "net*"
 filter_operator.set_ftrace_filter("net*", false).unwrap();
-// Print out the output of the trace in a human readable format
+// Print out the output of the trace in a human-readable format
 println!("{}", trace_ctrl.trace().unwrap());
 ```
